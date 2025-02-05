@@ -47,3 +47,23 @@ exports.getEmployeeById = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.getEmployeeWithDepartment = async (req, res) => {
+    try {
+      // Use populate() to get the department name along with employee details
+      const employee = await Employee.findById(req.params.id).populate('department', 'name');  // Populate department with just 'name'
+  
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found' });
+      }
+  
+      // Send back the employee data with the department name
+      res.status(200).json({
+        name: employee.name,
+        role: employee.role,
+        department: employee.department.name,  // Display department name
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
